@@ -21,8 +21,28 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'address',
+        'phone_number',
     ];
+    public function incomes()
+    {
+        return $this->hasMany(Income::class);
+    }
 
+    public function expenseCategories()
+    {
+        return $this->hasMany(ExpenseCategory::class);
+    }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+    public function goals()
+    {
+        return $this->hasMany(Goal::class);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *
