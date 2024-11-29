@@ -96,4 +96,41 @@ class IncomeController extends Controller
 
         return response()->json(['message' => 'Prihod uspešno obrisan.'], 200);
     }
+
+
+
+
+
+    /**
+     * Pretraga prihoda za ulogovanog korisnika.
+     */
+    public function search(Request $request)
+    {
+        // Validacija ulaznih podataka
+        $validator = Validator::make($request->all(), [
+            'query' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $query = $request->input('query'); // Tekst za pretragu
+
+        // Filtriranje prihoda samo za ulogovanog korisnika
+        $incomes = Income::where('user_id', auth()->id())
+            ->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('description', 'LIKE', "%{$query}%")
+                    ->orWhere('source', 'LIKE', "%{$query}%")
+                    ->orWhere('currency', 'LIKE', "%{$query}%");
+            })
+            ->get();
+
+        return response()->json(IncomeResource::collection($incomes), 200);
+    }
+
+
+
+
+
 }

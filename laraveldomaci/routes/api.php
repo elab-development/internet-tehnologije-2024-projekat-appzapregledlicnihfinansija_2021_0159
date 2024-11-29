@@ -25,10 +25,7 @@ use App\Http\Controllers\IncomeController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:sanctum')->get('/user', [AuthController::class, 'getUserData']);  //prikaz profila ulogovanog korisnika
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/expense-categories', [ExpenseCategoryController::class, 'index']);
@@ -38,13 +35,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/expense-categories/{id}', [ExpenseCategoryController::class, 'destroy']);
 
 
-
+    Route::get('/expenses/search', [ExpenseController::class, 'search']);
     Route::get('/expenses', [ExpenseController::class, 'index']);
     Route::get('/expenses/{id}', [ExpenseController::class, 'show']);
     Route::post('/expenses', [ExpenseController::class, 'store']);
     Route::put('/expenses/{id}', [ExpenseController::class, 'update']);
     Route::delete('/expenses/{id}', [ExpenseController::class, 'destroy']);
 
+   
+    Route::get('/incomes/search', [IncomeController::class, 'search']);
     Route::apiResource('incomes', IncomeController::class);
     Route::apiResource('goals', GoalController::class);
 

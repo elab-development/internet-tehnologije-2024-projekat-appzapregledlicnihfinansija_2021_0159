@@ -84,4 +84,46 @@ class AuthController extends Controller
             'message' => 'User logged out successfully',
         ]);
     }
+
+        /**
+     * Dohvata podatke o trenutno ulogovanom korisniku.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getUserData(Request $request)
+    {
+        $user = $request->user();
+
+        // Dohvata ukupne prihode korisnika
+        $totalIncome = $user->incomes()->sum('amount');
+
+        // Dohvata ukupne troškove korisnika
+        $totalExpense = $user->expenses()->sum('amount');
+
+        // Računa krajnji balans
+        $balance = $totalIncome - $totalExpense;
+
+        // Dohvata ciljeve korisnika
+        $goals = $user->goals()->get();
+
+        return response()->json([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'address' => $user->address,
+                'phone_number' => $user->phone_number,
+                'created_at' => $user->created_at->toDateTimeString(),
+                'updated_at' => $user->updated_at->toDateTimeString(),
+            ],
+            'financial_data' => [
+                'total_income' => $totalIncome,
+                'total_expense' => $totalExpense,
+                'balance' => $balance,
+            ],
+            'goals' => $goals, // Može se dodatno formatirati ako je potrebno
+        ], 200);
+    }   
+
 }

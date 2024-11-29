@@ -100,4 +100,43 @@ class ExpenseController extends Controller
 
         return response()->json(['message' => 'Trošak uspešno obrisan.'], 200);
     }
+
+
+
+
+
+
+        /**
+         * Pretraga troškova za ulogovanog korisnika.
+         */
+        public function search(Request $request)
+        {
+            // Validacija ulaznih podataka
+            // 'query' je obavezan, mora biti string dužine do 255 karaktera
+            $validator = Validator::make($request->all(), [
+                'query' => 'required|string|max:255',
+            ]);
+
+            // Ako validacija ne uspe, vraća se greška sa statusom 422 (Unprocessable Entity)
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+
+            // Dohvata vrednost parametra 'query' iz zahteva
+            $query = $request->input('query'); 
+
+            // Filtriranje troškova koji pripadaju ulogovanom korisniku
+            // Proverava user_id i koristi funkciju where za pretragu
+            $expenses = Expense::where('user_id', auth()->id()) // Filtrira troškove za trenutno ulogovanog korisnika
+                ->where(function ($queryBuilder) use ($query) {
+                    // Dodaje uslov za pretragu prema opisu ili valuti
+                    $queryBuilder->where('description', 'LIKE', "%{$query}%") // Traži opis koji sadrži uneseni tekst
+                        ->orWhere('currency', 'LIKE', "%{$query}%"); // Traži valutu koja sadrži uneseni tekst
+                })
+                ->get(); // Dohvata rezultate pretrage
+
+            // Vraća rezultate pretrage kao JSON koristeći ExpenseResource za formatiranje
+            return response()->json(ExpenseResource::collection($expenses), 200);
+        }
+
 }
