@@ -22,4 +22,8 @@ class Income extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    protected $casts = [
+        'date' => 'date', // Ovo osigurava da se `date` pretvara u Carbon instancu
+    ];
 }

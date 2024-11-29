@@ -21,7 +21,7 @@ class GoalResource extends JsonResource
             'target_amount' => $this->target_amount,
             'current_amount' => $this->current_amount,
             'progress' => $this->progressPercentage(), // Izračunati procenat postignuća cilja
-            'user_id' => $this->user_id,
+            'user_id' => $this->user,
             'deadline' => $this->deadline ? $this->deadline->format('Y-m-d') : null, // Rok u čitljivom formatu
             'status' => $this->status,
             'created_at' => $this->created_at->toDateTimeString(),

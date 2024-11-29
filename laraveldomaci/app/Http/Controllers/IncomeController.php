@@ -12,9 +12,14 @@ class IncomeController extends Controller
     /**
      * Prikaz svih prihoda.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $incomes = Income::where('user_id', auth()->id())->get();
+        // Dohvata sve prihode ulogovanog korisnika
+        $incomes = Income::where('user_id', auth()->id())
+            ->orderBy('date', 'desc') // Sortira po datumu silazno (najnoviji prvo)
+            ->get();
+    
+        // Vraća kolekciju resursa prihoda u JSON formatu
         return response()->json(IncomeResource::collection($incomes), 200);
     }
 

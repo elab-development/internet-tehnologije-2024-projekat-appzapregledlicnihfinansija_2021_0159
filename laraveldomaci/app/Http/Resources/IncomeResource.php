@@ -18,7 +18,7 @@ class IncomeResource extends JsonResource
             'id' => $this->id,
             'amount' => $this->amount,
             'description' => $this->description,
-            'user_id' => $this->user_id,
+            'user_id' => $this->user,
             'source' => $this->source,
             'currency' => $this->currency,
             'date' => $this->date->format('Y-m-d'),

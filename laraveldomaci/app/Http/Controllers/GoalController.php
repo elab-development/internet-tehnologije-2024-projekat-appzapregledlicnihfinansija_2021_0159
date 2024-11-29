@@ -38,13 +38,13 @@ class GoalController extends Controller
             'target_amount' => 'required|numeric|min:0',
             'current_amount' => 'nullable|numeric|min:0',
             'deadline' => 'nullable|date',
-            'status' => 'required|in:active,completed,canceled',
+            'status' => 'required|in:in_progress,achieved,failed',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
+ 
         $goal = Goal::create([
             'title' => $request->title,
             'description' => $request->description,
@@ -71,7 +71,7 @@ class GoalController extends Controller
             'target_amount' => 'required|numeric|min:0',
             'current_amount' => 'nullable|numeric|min:0',
             'deadline' => 'nullable|date',
-            'status' => 'required|in:active,completed,canceled',
+            'status' => 'required|in:in_progress,achieved,failed',
         ]);
 
         if ($validator->fails()) {

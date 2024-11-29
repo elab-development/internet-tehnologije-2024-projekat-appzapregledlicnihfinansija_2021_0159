@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\ExpenseCategory;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ExpenseResource extends JsonResource
@@ -18,9 +19,9 @@ class ExpenseResource extends JsonResource
             'id' => $this->id,
             'amount' => $this->amount,
             'description' => $this->description,
-            'expense_category_id' => $this->expense_category_id,
+            'expense_category_id' => ExpenseCategory::find($this->expense_category_id),
             'category_name' => $this->expenseCategory->name ?? null, // Naziv kategorije
-            'user_id' => $this->user_id,
+            'user_id' => $this->user,
             'currency' => $this->currency,
             'date' => $this->date->format('Y-m-d'),
             'status' => $this->status,
