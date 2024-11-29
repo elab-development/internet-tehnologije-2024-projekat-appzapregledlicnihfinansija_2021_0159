@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 
 use App\Http\Controllers\ExpenseCategoryController;
+use App\Http\Controllers\ExpenseController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,4 +33,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/expense-categories', [ExpenseCategoryController::class, 'store']);
     Route::put('/expense-categories/{id}', [ExpenseCategoryController::class, 'update']);
     Route::delete('/expense-categories/{id}', [ExpenseCategoryController::class, 'destroy']);
+
+
+
+    Route::get('/expenses', [ExpenseController::class, 'index']);
+    Route::get('/expenses/{id}', [ExpenseController::class, 'show']);
+    Route::post('/expenses', [ExpenseController::class, 'store']);
+    Route::put('/expenses/{id}', [ExpenseController::class, 'update']);
+    Route::delete('/expenses/{id}', [ExpenseController::class, 'destroy']);
 });
