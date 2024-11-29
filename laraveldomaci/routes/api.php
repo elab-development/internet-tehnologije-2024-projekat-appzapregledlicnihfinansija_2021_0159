@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthController;
 
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\IncomeController;
 
@@ -48,4 +49,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('goals', GoalController::class);
 
 
+
+
+    Route::get('/export/all', [ExportController::class, 'exportAll']); // Izvoz svih korisnika
+    Route::get('/export/user/{id}', [ExportController::class, 'exportUser']); // Izvoz određenog korisnika
 });
