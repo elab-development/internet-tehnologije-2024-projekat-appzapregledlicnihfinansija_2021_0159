@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthController;
 
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\GoalController;
 use App\Http\Controllers\IncomeController;
 
 /*
@@ -44,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/expenses/{id}', [ExpenseController::class, 'destroy']);
 
     Route::apiResource('incomes', IncomeController::class);
-
+    Route::apiResource('goals', GoalController::class);
 
 
 });
