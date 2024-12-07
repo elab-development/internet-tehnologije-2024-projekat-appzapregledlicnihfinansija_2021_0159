@@ -58,7 +58,7 @@ class ExportController extends Controller
         fclose($file);
 
         // Preuzima generisani CSV fajl kao odgovor korisniku i briše ga sa servera nakon preuzimanja.
-        return response()->download($filePath)->deleteFileAfterSend(true);
+        return response()->download($filePath);
     }
 
     /**
@@ -107,6 +107,6 @@ class ExportController extends Controller
         fclose($file);
 
         // Preuzima generisani CSV fajl kao odgovor korisniku i briše ga sa servera nakon preuzimanja.
-        return response()->download($filePath)->deleteFileAfterSend(true);
+        return response()->download($filePath);
     }
 }
