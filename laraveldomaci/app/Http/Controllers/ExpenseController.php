@@ -39,6 +39,7 @@ class ExpenseController extends Controller
             'currency' => 'required|string|max:3',
             'date' => 'required|date',
             'status' => 'required|in:paid,pending',
+            'goal_id' => 'nullable|exists:goals,id', // Validacija za goal_id
         ]);
 
         if ($validator->fails()) {
@@ -53,6 +54,7 @@ class ExpenseController extends Controller
             'currency' => $request->currency,
             'date' => $request->date,
             'status' => $request->status,
+            'goal_id' => $request->goal_id, // Postavljanje goal_id ako je prosleđen
         ]);
 
         return response()->json(new ExpenseResource($expense), 201);
@@ -72,6 +74,7 @@ class ExpenseController extends Controller
             'currency' => 'required|string|max:3',
             'date' => 'required|date',
             'status' => 'required|in:paid,pending',
+            'goal_id' => 'nullable|exists:goals,id', // Validacija za goal_id
         ]);
 
         if ($validator->fails()) {
@@ -85,6 +88,7 @@ class ExpenseController extends Controller
             'currency' => $request->currency,
             'date' => $request->date,
             'status' => $request->status,
+            'goal_id' => $request->goal_id, // Postavljanje goal_id ako je prosleđen
         ]);
 
         return response()->json(new ExpenseResource($expense), 200);

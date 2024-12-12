@@ -17,6 +17,7 @@ class Expense extends Model
         'currency',
         'date',
         'status', // npr. "paid", "unpaid"
+        'goal_id',  //dodato posle konsultacija
     ];
 
     public function expenseCategory()
@@ -29,7 +30,10 @@ class Expense extends Model
         return $this->belongsTo(User::class);
     }
 
-    
+    public function goal() //dodato posle konsultacija
+    {
+        return $this->belongsTo(Goal::class);
+    }
     protected $casts = [
         'date' => 'date', // Ovo osigurava da se `date` pretvara u Carbon instancu
     ];

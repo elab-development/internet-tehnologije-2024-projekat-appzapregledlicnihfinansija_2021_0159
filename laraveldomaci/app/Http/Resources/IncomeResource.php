@@ -21,7 +21,9 @@ class IncomeResource extends JsonResource
             'user_id' => $this->user,
             'source' => $this->source,
             'currency' => $this->currency,
+
             'date' => $this->date->format('Y-m-d'),
+            'goal_id' => $this->goal_id, // Dodato posle konsultacija
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
         ];

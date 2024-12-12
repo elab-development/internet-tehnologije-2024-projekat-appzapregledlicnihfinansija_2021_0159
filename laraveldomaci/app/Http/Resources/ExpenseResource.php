@@ -25,6 +25,7 @@ class ExpenseResource extends JsonResource
             'currency' => $this->currency,
             'date' => $this->date->format('Y-m-d'),
             'status' => $this->status,
+            'goal_id' => $this->goal_id, // Dodato posle konsultacija
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
         ];

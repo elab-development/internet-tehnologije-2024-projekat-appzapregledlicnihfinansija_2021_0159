@@ -16,6 +16,7 @@ class Income extends Model
         'source', // npr. "salary", "bonus", "gift"
         'currency',
         'date',
+        'goal_id',  //dodato posle konsultacija
     ];
 
     public function user()
@@ -26,4 +27,10 @@ class Income extends Model
     protected $casts = [
         'date' => 'date', // Ovo osigurava da se `date` pretvara u Carbon instancu
     ];
+
+
+    public function goal() //dodato posle konsultacija
+    {
+        return $this->belongsTo(Goal::class);
+    }
 }

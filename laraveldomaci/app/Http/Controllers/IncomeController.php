@@ -14,12 +14,10 @@ class IncomeController extends Controller
      */
     public function index(Request $request)
     {
-        // Dohvata sve prihode ulogovanog korisnika
         $incomes = Income::where('user_id', auth()->id())
-            ->orderBy('date', 'desc') // Sortira po datumu silazno (najnoviji prvo)
+            ->orderBy('date', 'desc')
             ->get();
-    
-        // Vraća kolekciju resursa prihoda u JSON formatu
+
         return response()->json(IncomeResource::collection($incomes), 200);
     }
 
@@ -43,6 +41,7 @@ class IncomeController extends Controller
             'source' => 'required|string|max:255',
             'currency' => 'required|string|max:3',
             'date' => 'required|date',
+            'goal_id' => 'nullable|exists:goals,id', // Validacija za goal_id
         ]);
 
         if ($validator->fails()) {
@@ -56,6 +55,7 @@ class IncomeController extends Controller
             'user_id' => auth()->id(),
             'currency' => $request->currency,
             'date' => $request->date,
+            'goal_id' => $request->goal_id, // Postavljanje goal_id ako je prosleđen
         ]);
 
         return response()->json(new IncomeResource($income), 201);
@@ -74,6 +74,7 @@ class IncomeController extends Controller
             'source' => 'required|string|max:255',
             'currency' => 'required|string|max:3',
             'date' => 'required|date',
+            'goal_id' => 'nullable|exists:goals,id', // Validacija za goal_id
         ]);
 
         if ($validator->fails()) {
@@ -86,6 +87,7 @@ class IncomeController extends Controller
             'source' => $request->source,
             'currency' => $request->currency,
             'date' => $request->date,
+            'goal_id' => $request->goal_id, // Postavljanje goal_id ako je prosleđen
         ]);
 
         return response()->json(new IncomeResource($income), 200);
@@ -102,16 +104,11 @@ class IncomeController extends Controller
         return response()->json(['message' => 'Prihod uspešno obrisan.'], 200);
     }
 
-
-
-
-
     /**
      * Pretraga prihoda za ulogovanog korisnika.
      */
     public function search(Request $request)
     {
-        // Validacija ulaznih podataka
         $validator = Validator::make($request->all(), [
             'query' => 'required|string|max:255',
         ]);
@@ -120,9 +117,8 @@ class IncomeController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $query = $request->input('query'); // Tekst za pretragu
+        $query = $request->input('query');
 
-        // Filtriranje prihoda samo za ulogovanog korisnika
         $incomes = Income::where('user_id', auth()->id())
             ->where(function ($queryBuilder) use ($query) {
                 $queryBuilder->where('description', 'LIKE', "%{$query}%")
@@ -133,9 +129,4 @@ class IncomeController extends Controller
 
         return response()->json(IncomeResource::collection($incomes), 200);
     }
-
-
-
-
-
 }

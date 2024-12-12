@@ -26,8 +26,31 @@ class UserFactory extends Factory
             'address' => $this->faker->address(),
             'phone_number' => $this->faker->phoneNumber(),
             'remember_token' => Str::random(10),
+            'type' => $this->getRandomType(), // Dodajemo logiku za nasumičan izbor tipa, poziva se funkcija ispod
+
         ];
     }
+
+
+
+ /**
+     * Get a random user type with 'regular' as the most frequent type.
+     *
+     * @return string
+     */
+    private function getRandomType()
+    {
+        // Većinski regularni korisnici (npr. 70% regular, 20% guest, 10% admin)
+        $types = [
+            'regular', 'regular', 'regular', 'regular', 'regular', 'regular', 'regular',
+            'guest', 'guest',
+            'admin',
+        ];
+
+        return $this->faker->randomElement($types);
+    }
+
+
 
     /**
      * Indicate that the model's email address should be unverified.

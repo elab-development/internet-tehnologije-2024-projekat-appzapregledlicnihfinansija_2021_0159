@@ -21,6 +21,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'address' => 'nullable|string|max:255',
             'phone_number' => 'nullable|string|max:15',
+            'type' => 'nullable|in:regular,admin,guest', // Validacija za type
         ]);
 
         if ($validator->fails()) {
@@ -33,6 +34,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
             'address' => $request->address,
             'phone_number' => $request->phone_number,
+            'type' => $request->type ?? 'regular', // Podrazumevana vrednost za type je 'regular'
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -113,6 +115,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'address' => $user->address,
+                'type' => $user->type, 
                 'phone_number' => $user->phone_number,
                 'created_at' => $user->created_at->toDateTimeString(),
                 'updated_at' => $user->updated_at->toDateTimeString(),
