@@ -48,8 +48,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('goals', GoalController::class);
 
 
-
+    Route::get('/auth/users', [AuthController::class, 'getAllUsers']);
 
     Route::get('/export/all', [ExportController::class, 'exportAll']); // Izvoz svih korisnika
     Route::get('/export/user/{id}', [ExportController::class, 'exportUser']); // Izvoz određenog korisnika
+
+    Route::get('/users/{id}/statistics', [AuthController::class, 'getUserStatistics']);
 });
