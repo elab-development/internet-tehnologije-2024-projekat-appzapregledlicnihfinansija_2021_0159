@@ -4,8 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Income;
 use App\Http\Resources\IncomeResource;
+use App\Models\Goal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+
+
+    // /**
+    //  * za seminarski je ovaj kontroler dopunjen sa transakcijama
+    //  */
+
+
 
 class IncomeController extends Controller
 {
@@ -14,13 +23,26 @@ class IncomeController extends Controller
      */
     public function index(Request $request)
     {
-        $incomes = Income::where('user_id', auth()->id())
-            ->orderBy('date', 'desc')
-            ->get();
-
-        return response()->json(IncomeResource::collection($incomes), 200);
+        $query = Income::where('user_id', auth()->id());
+    
+        if ($request->filled('description')) {
+            $query->where('description', 'LIKE', '%' . $request->description . '%');
+        }
+        if ($request->filled('date')) {
+            $query->whereDate('date', $request->date);
+        }
+        if ($request->filled('currency')) {
+            $query->where('currency', $request->currency);
+        }
+        if ($request->filled('goal_id')) {
+            $query->where('goal_id', $request->goal_id);
+        }
+    
+        $incomes = $query->orderBy('date', 'desc')->paginate(10);
+    
+        return response()->json($incomes, 200);
     }
-
+    
     /**
      * Prikaz jednog prihoda po ID-ju.
      */
@@ -31,7 +53,7 @@ class IncomeController extends Controller
     }
 
     /**
-     * Kreiranje novog prihoda.
+     * Kreiranje novog prihoda (sa transakcijom).
      */
     public function store(Request $request)
     {
@@ -41,67 +63,185 @@ class IncomeController extends Controller
             'source' => 'required|string|max:255',
             'currency' => 'required|string|max:3',
             'date' => 'required|date',
-            'goal_id' => 'nullable|exists:goals,id', // Validacija za goal_id
+            'goal_id' => 'nullable|exists:goals,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $income = Income::create([
-            'amount' => $request->amount,
-            'description' => $request->description,
-            'source' => $request->source,
-            'user_id' => auth()->id(),
-            'currency' => $request->currency,
-            'date' => $request->date,
-            'goal_id' => $request->goal_id, // Postavljanje goal_id ako je prosleđen
-        ]);
+        DB::beginTransaction();
+        try {
+            // 1) Kreiramo Income
+            $income = Income::create([
+                'amount'      => $request->amount,
+                'description' => $request->description,
+                'source'      => $request->source,
+                'user_id'     => auth()->id(),
+                'currency'    => $request->currency,
+                'date'        => $request->date,
+                'goal_id'     => $request->goal_id,
+            ]);
 
-        return response()->json(new IncomeResource($income), 201);
+            // 2) Ako postoji goal_id, uvećavamo current_amount tog goal-a
+            if ($income->goal_id) {
+                $goal = Goal::findOrFail($income->goal_id);
+                $goal->current_amount += $income->amount;
+
+
+                // Provera statusa cilja i potencijalno slanje notifikacija
+                $percentageAchieved = (($goal->target_amount - $goal->current_amount) / $goal->target_amount) * 100;
+
+                // Ako je postignuto 80%, 90% ili 100%, šaljemo email notifikaciju
+                if ($percentageAchieved >= 80 && $percentageAchieved < 90) {
+                    // Funkcija za slanje email-a za 80%
+                    $this->sendGoalNotification($goal, 80);
+                } elseif ($percentageAchieved >= 90 && $percentageAchieved < 100) {
+                    // Funkcija za slanje email-a za 90%
+                    $this->sendGoalNotification($goal, 90);
+                } elseif ($percentageAchieved >= 100) {
+                    // Funkcija za slanje email-a za 100%
+                    $this->sendGoalNotification($goal, 100);
+                }
+
+                 
+
+
+
+
+
+
+                // Provera da li je cilj postignut
+                if ($goal->current_amount >= $goal->target_amount) {
+                    $goal->status = 'achieved';
+                }
+
+                $goal->save();
+            }
+
+            DB::commit();
+            return response()->json(new IncomeResource($income), 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => 'Neuspešno kreiranje prihoda: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
-     * Ažuriranje postojećeg prihoda.
+     * Ažuriranje postojećeg prihoda (sa transakcijom).
      */
     public function update(Request $request, $id)
     {
         $income = Income::where('user_id', auth()->id())->findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'amount' => 'required|numeric|min:0',
+            'amount'      => 'required|numeric|min:0',
             'description' => 'nullable|string|max:255',
-            'source' => 'required|string|max:255',
-            'currency' => 'required|string|max:3',
-            'date' => 'required|date',
-            'goal_id' => 'nullable|exists:goals,id', // Validacija za goal_id
+            'source'      => 'required|string|max:255',
+            'currency'    => 'required|string|max:3',
+            'date'        => 'required|date',
+            'goal_id'     => 'nullable|exists:goals,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $income->update([
-            'amount' => $request->amount,
-            'description' => $request->description,
-            'source' => $request->source,
-            'currency' => $request->currency,
-            'date' => $request->date,
-            'goal_id' => $request->goal_id, // Postavljanje goal_id ako je prosleđen
-        ]);
+        // Čuvamo staru vrednost
+        $oldGoalId   = $income->goal_id;
+        $oldAmount   = $income->amount;
 
-        return response()->json(new IncomeResource($income), 200);
+        DB::beginTransaction();
+        try {
+            // 1) Ažuriramo Income
+            $income->update([
+                'amount'      => $request->amount,
+                'description' => $request->description,
+                'source'      => $request->source,
+                'currency'    => $request->currency,
+                'date'        => $request->date,
+                'goal_id'     => $request->goal_id,
+            ]);
+
+            // 2) Vratimo stari iznos starom goal-u (ako je postojao)
+            if ($oldGoalId) {
+                $oldGoal = Goal::findOrFail($oldGoalId);
+                $oldGoal->current_amount -= $oldAmount; 
+                // Pazite: ranije smo DODAVALI amount na goal, pa sada vraćamo staru vrednost ODUZIMANJEM
+                // ili obrnuto – zavisi kako ste definisali logiku. 
+                // U ovom primeru, podrazumevali smo da Income DODAJE iznos goal-u,
+                // pa kada brišemo ili menjamo stari iznos, treba da GA ODUZMEMO od goal->current_amount.
+                
+                // Provera da li je time goal možda izgubio 'achieved' status
+                if ($oldGoal->current_amount < $oldGoal->target_amount && $oldGoal->status === 'achieved') {
+                    $oldGoal->status = 'in_progress'; // ili nešto slično
+                }
+
+                $oldGoal->save();
+            }
+
+            // 3) Ako sada Income ima novi goal_id, dodajemo novi amount novom goal-u
+            if ($income->goal_id) {
+                $newGoal = Goal::findOrFail($income->goal_id);
+                $newGoal->current_amount += $income->amount;
+
+                // Provera da li je cilj postignut
+                if ($newGoal->current_amount >= $newGoal->target_amount) {
+                    $newGoal->status = 'achieved';
+                }
+
+                $newGoal->save();
+            }
+
+            DB::commit();
+            return response()->json(new IncomeResource($income), 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => 'Neuspešno ažuriranje prihoda: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
-     * Brisanje prihoda.
+     * Brisanje prihoda (sa transakcijom).
      */
     public function destroy($id)
     {
         $income = Income::where('user_id', auth()->id())->findOrFail($id);
-        $income->delete();
 
-        return response()->json(['message' => 'Prihod uspešno obrisan.'], 200);
+        DB::beginTransaction();
+        try {
+            // Ako je Income vezan za cilj, treba da vratimo iznos
+            if ($income->goal_id) {
+                $goal = Goal::findOrFail($income->goal_id);
+
+                // Pošto smo Income dodavali u goal, sad ga ODUZIMAMO
+                $goal->current_amount -= $income->amount;
+
+                // Možda goal više nije achieved
+                if ($goal->current_amount < $goal->target_amount && $goal->status === 'achieved') {
+                    $goal->status = 'in_progress'; // ili neki drugi status
+                }
+
+                $goal->save();
+            }
+
+            $income->delete();
+
+            DB::commit();
+            return response()->json(['message' => 'Prihod uspešno obrisan.'], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => 'Neuspešno brisanje prihoda: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
