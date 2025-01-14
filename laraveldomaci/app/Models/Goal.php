@@ -25,6 +25,16 @@ class Goal extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+    public function incomes()
+    {
+        return $this->hasMany(Income::class);
+    }
+
     protected $casts = [
         'deadline' => 'date', // Ovo osigurava da se `date` pretvara u Carbon instancu
     ];
