@@ -1,0 +1,387 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Open+Sans:wght@300;400;600;700&display=swap");
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", sans-serif;
+  background-color: #ffffff;
+  color: #0c0c0c;
+}
+
+/* Hero Area (omotac cele stranice) */
+.hero_area {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header_section {
+  padding: 15px 0;
+  background: #00204a;
+}
+.header_section .navbar-brand span {
+  font-weight: bold;
+  font-size: 24px;
+  color: #ffffff;
+}
+.header_section .navbar-nav .nav-link {
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-right: 15px;
+}
+.header_section .navbar-nav .nav-link:hover {
+  color: #00bbf0;
+}
+.header_section .nav_search-btn {
+  color: #ffffff;
+}
+
+/* Hero Background */
+.hero_bg_box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+.bg_img_box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Slider Section (Welcome text + slika) */
+.slider_section {
+  padding: 60px 0 120px 0;
+}
+.slider_section .detail-box h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+.slider_section .detail-box p {
+  color: #f8f8f8;
+}
+.slider_section .btn-box .btn1 {
+  background-color: #00bbf0;
+  color: #ffffff;
+  padding: 10px 30px;
+  border: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.slider_section .btn-box .btn1:hover {
+  background-color: #007fa4;
+}
+.slider_section .img-box img {
+  max-width: 100%;
+  animation: upDown 5s infinite;
+}
+@keyframes upDown {
+  0% {
+    transform: translateY(-15px);
+  }
+  50% {
+    transform: translateY(15px);
+  }
+  100% {
+    transform: translateY(-15px);
+  }
+}
+
+/* Service Section */
+.service_section {
+  background-color: #f8f8f9;
+  padding: 80px 0;
+}
+.service_section .heading_container h2 {
+  color: #00204a;
+}
+.service_section .box {
+  background-color: #fff;
+  padding: 20px;
+  margin-top: 30px;
+  text-align: center;
+  border-radius: 5px;
+}
+.service_section .box .img-box {
+  margin-bottom: 15px;
+}
+.service_section .box h5 {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #00204a;
+}
+.service_section .btn-box a {
+  background-color: #00bbf0;
+  color: #ffffff;
+  padding: 10px 40px;
+  text-transform: uppercase;
+  border: none;
+  transition: 0.3s;
+}
+.service_section .btn-box a:hover {
+  background-color: #007fa4;
+}
+
+/* About Section */
+.about_section {
+  background-color: #00204a;
+  color: #ffffff;
+  padding: 80px 0;
+}
+.about_section .heading_container span {
+  color: #00bbf0;
+}
+.about_section .img-box img {
+  max-width: 100%;
+}
+.about_section .detail-box h3 {
+  font-weight: bold;
+  color: #00bbf0;
+}
+.about_section .detail-box a {
+  display: inline-block;
+  padding: 10px 30px;
+  background-color: #00bbf0;
+  color: #ffffff;
+  margin-top: 20px;
+  transition: 0.3s;
+  text-transform: uppercase;
+}
+.about_section .detail-box a:hover {
+  background-color: #007fa4;
+}
+
+/* Why Section */
+.why_section {
+  padding: 80px 0;
+}
+.why_section .heading_container span {
+  color: #00bbf0;
+}
+.why_section .why_container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+.why_section .box {
+  text-align: center;
+  width: 220px;
+  margin: 20px;
+}
+.why_section .box .img-box {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 15px auto;
+  border: 5px solid #00204a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.why_section .box h5 {
+  color: #00204a;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.why_section .btn-box a {
+  background-color: #00bbf0;
+  color: #ffffff;
+  padding: 10px 40px;
+  text-transform: uppercase;
+  border: none;
+  transition: 0.3s;
+}
+.why_section .btn-box a:hover {
+  background-color: #007fa4;
+}
+
+/* Info Section (kontakt, linkovi...) */
+.info_section {
+  background-color: #00204a;
+  color: #ffffff;
+  padding: 60px 0 30px 0;
+}
+.info_section h4 {
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.info_section .contact_link_box a {
+  display: block;
+  margin: 8px 0;
+  color: #ffffff;
+}
+.info_section .info_link_box {
+  margin-left: 8rem; /* Automatsko pomeranje udesno */
+  margin-right: 0; /* Uklanjanje dodatnog razmaka s desne strane */
+  text-align: left; /* Poravnanje teksta na desno */
+}
+.info_section .info_contact {
+  margin-right: auto; /* Osigurava da ostane uz levu ivicu */
+}
+.info_section .info_social a {
+  color: #ffffff;
+  margin-right: 10px;
+  font-size: 20px;
+}
+.info_section form input {
+  border: none;
+  border-bottom: 1px solid #ffffff;
+  background-color: transparent;
+  color: #ffffff;
+  outline: none;
+  margin-bottom: 10px;
+  width: 100%;
+}
+.info_section form button {
+  background-color: #00bbf0;
+  color: #ffffff;
+  border: none;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.info_section form button:hover {
+  background-color: #007fa4;
+}
+
+/* Footer Section */
+.footer_section {
+  background-color: #ffffff;
+  text-align: center;
+  padding: 20px 0;
+}
+.footer_section p {
+  color: #00204a;
+  margin: 0;
+}
+.footer_section p a {
+  color: #00204a;
+  font-weight: bold;
+}
+
+/* Dodatno po želji… */
+/* Responsive primer */
+@media (max-width: 768px) {
+  .why_section .why_container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .why_section .box {
+    width: 70%;
+  }
+}
+@media (max-width: 1300px) {}
+
+@media (max-width: 1120px) {}
+
+@media (max-width: 992px) {
+  .hero_area {
+    min-height: auto;
+  }
+
+  .hero_area {
+    background: linear-gradient(130deg, #231a6f, #0f054c);
+  }
+
+  .hero_area .hero_bg_box {
+    display: none;
+  }
+
+  .slider_section {
+    padding: 45px 0 75px 0;
+  }
+
+  .custom_nav-container .navbar-nav {
+    padding-top: 15px;
+    align-items: center;
+  }
+
+
+  .custom_nav-container .navbar-nav .nav-item .nav-link {
+    padding: 5px 25px;
+    margin: 5px 0;
+  }
+
+
+}
+
+@media (max-width: 768px) {
+  .about_section .img-box {
+    margin-bottom: 45px;
+  }
+
+}
+
+@media (max-width: 576px) {
+  .header_section .header_top .contact_nav a span {
+    display: none;
+  }
+
+
+  .client_section .client_container {
+    width: 100%;
+  }
+
+  .client_section .box {
+    margin: 0;
+  }
+
+  .owl-nav {
+    display: flex;
+    justify-content: center;
+    margin-top: 45px;
+  }
+
+  .client_section .owl-carousel .owl-nav .owl-prev,
+  .client_section .owl-carousel .owl-nav .owl-next {
+    position: unset;
+    margin: 0 2.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slider_section .detail-box h1 {
+    font-size: 2rem;
+  }
+
+  .track_section form {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .track_section form input {
+    width: 100%;
+  }
+
+  .track_section form button {
+    padding: 10px 60px;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .service_section .box {
+    flex-direction: column;
+  }
+
+  .service_section .box .img-box {
+    justify-content: flex-start;
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 376px) {}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1170px;
+  }
+}
