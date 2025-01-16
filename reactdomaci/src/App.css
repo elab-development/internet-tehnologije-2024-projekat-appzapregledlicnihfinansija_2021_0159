@@ -925,3 +925,199 @@ button[type="submit"]:hover {
   margin-bottom: 10px;
   text-align: center;
 }
+
+.add-category {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.add-category input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-right: 10px;
+  width: 300px;
+}
+
+.add-category button {
+  background-color: #00bbf0;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-category button:hover {
+  background-color: #007fa4;
+}
+
+.category-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.category-table th,
+.category-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.category-table th {
+  background-color: #00204a;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.category-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.category-table td input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 100%;
+}
+
+.category-table td button {
+  background-color: #00bbf0;
+  color: #ffffff;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-right: 5px;
+}
+
+.category-table td button:hover {
+  background-color: #007fa4;
+}
+
+.category-table td button:last-child {
+  background-color: #ff4d4d;
+}
+
+.category-table td button:last-child:hover {
+  background-color: #cc0000;
+}.user-table-container {
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #f8f8f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-table-container h1 {
+  text-align: center;
+  color: #00204a;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.user-table th,
+.user-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.user-table th {
+  background-color: #00204a;
+  color: #ffffff;
+}
+
+.user-table tr:nth-child(even) {
+  background-color: #f8f8f9;
+}
+
+.user-table tr:hover {
+  background-color: #e0f7fa;
+}
+
+.export-all-button,
+.export-user-button {
+  background-color: #00bbf0;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.export-all-button:hover,
+.export-user-button:hover {
+  background-color: #007fa4;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+}
+.user-statistics {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.chart-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.chart {
+  width: 100%;
+  max-width: 600px;
+  background-color: #f8f8f9;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.breadcrumbs {
+  padding: 10px 20px;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #ddd;
+}
+
+.breadcrumbs ol {
+  list-style: none;
+  display: flex;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+}
+
+.breadcrumbs li {
+  display: inline;
+}
+
+.breadcrumb-link {
+  color: black;
+  font-weight: normal; /* Možete prilagoditi težinu ako želite */
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.breadcrumb-link:hover {
+  color: #00bbf0; /* Plava boja na hover */
+  text-decoration: underline; /* Podvlačenje na hover */
+}
