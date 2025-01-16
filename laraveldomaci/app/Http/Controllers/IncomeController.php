@@ -8,11 +8,12 @@ use App\Models\Goal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\GoalNotificationMail;
 
-
-    // /**
-    //  * za seminarski je ovaj kontroler dopunjen sa transakcijama
-    //  */
+// /**
+//  * za seminarski je ovaj kontroler dopunjen sa transakcijama
+//  */
 
 
 
@@ -24,7 +25,7 @@ class IncomeController extends Controller
     public function index(Request $request)
     {
         $query = Income::where('user_id', auth()->id());
-    
+
         if ($request->filled('description')) {
             $query->where('description', 'LIKE', '%' . $request->description . '%');
         }
@@ -37,12 +38,12 @@ class IncomeController extends Controller
         if ($request->filled('goal_id')) {
             $query->where('goal_id', $request->goal_id);
         }
-    
+
         $incomes = $query->orderBy('date', 'desc')->paginate(10);
-    
+
         return response()->json($incomes, 200);
     }
-    
+
     /**
      * Prikaz jednog prihoda po ID-ju.
      */
@@ -103,14 +104,6 @@ class IncomeController extends Controller
                     // Funkcija za slanje email-a za 100%
                     $this->sendGoalNotification($goal, 100);
                 }
-
-                 
-
-
-
-
-
-
                 // Provera da li je cilj postignut
                 if ($goal->current_amount >= $goal->target_amount) {
                     $goal->status = 'achieved';
@@ -121,13 +114,25 @@ class IncomeController extends Controller
 
             DB::commit();
             return response()->json(new IncomeResource($income), 201);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'error' => 'Neuspešno kreiranje prihoda: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function sendGoalNotification($goal, $percentage)
+    {
+        $data = [
+            'goalTitle' => $goal->title,
+            'percentage' => $percentage,
+            'targetAmount' => $goal->target_amount,
+            'currentAmount' => $goal->current_amount,
+            'remainingAmount' => $goal->target_amount - $goal->current_amount,
+        ];
+
+        Mail::to(auth()->user()->email)->send(new GoalNotificationMail($data));
     }
 
     /**
@@ -169,12 +174,12 @@ class IncomeController extends Controller
             // 2) Vratimo stari iznos starom goal-u (ako je postojao)
             if ($oldGoalId) {
                 $oldGoal = Goal::findOrFail($oldGoalId);
-                $oldGoal->current_amount -= $oldAmount; 
-                // Pazite: ranije smo DODAVALI amount na goal, pa sada vraćamo staru vrednost ODUZIMANJEM
+                $oldGoal->current_amount -= $oldAmount;
+                // ranije smo DODAVALI amount na goal, pa sada vraćamo staru vrednost ODUZIMANJEM
                 // ili obrnuto – zavisi kako ste definisali logiku. 
                 // U ovom primeru, podrazumevali smo da Income DODAJE iznos goal-u,
                 // pa kada brišemo ili menjamo stari iznos, treba da GA ODUZMEMO od goal->current_amount.
-                
+
                 // Provera da li je time goal možda izgubio 'achieved' status
                 if ($oldGoal->current_amount < $oldGoal->target_amount && $oldGoal->status === 'achieved') {
                     $oldGoal->status = 'in_progress'; // ili nešto slično
@@ -198,7 +203,6 @@ class IncomeController extends Controller
 
             DB::commit();
             return response()->json(new IncomeResource($income), 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -235,7 +239,6 @@ class IncomeController extends Controller
 
             DB::commit();
             return response()->json(['message' => 'Prihod uspešno obrisan.'], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([

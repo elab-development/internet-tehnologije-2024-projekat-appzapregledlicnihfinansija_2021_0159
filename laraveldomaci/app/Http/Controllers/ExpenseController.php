@@ -8,10 +8,11 @@ use App\Models\Goal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
-    // /**
-    //  * za seminarski je ovaj kontroler dopunjen sa transakcijama
-    //  */
+use Illuminate\Support\Facades\Mail;
+use App\Mail\GoalNotificationMail;
+// /**
+//  * za seminarski je ovaj kontroler dopunjen sa transakcijama
+//  */
 
 
 class ExpenseController extends Controller
@@ -101,7 +102,6 @@ class ExpenseController extends Controller
 
             DB::commit();  // sve OK
             return response()->json(new ExpenseResource($expense), 201);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -190,13 +190,25 @@ class ExpenseController extends Controller
 
             DB::commit();
             return response()->json(new ExpenseResource($expense), 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'error' => 'Neuspešno ažuriranje troška: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function sendGoalNotification($goal, $percentage)
+    {
+        $data = [
+            'goalTitle' => $goal->title,
+            'percentage' => $percentage,
+            'targetAmount' => $goal->target_amount,
+            'currentAmount' => $goal->current_amount,
+            'remainingAmount' => $goal->target_amount - $goal->current_amount,
+        ];
+
+        Mail::to(auth()->user()->email)->send(new GoalNotificationMail($data));
     }
 
     /**
@@ -219,7 +231,6 @@ class ExpenseController extends Controller
 
             DB::commit();
             return response()->json(['message' => 'Trošak uspešno obrisan.'], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([

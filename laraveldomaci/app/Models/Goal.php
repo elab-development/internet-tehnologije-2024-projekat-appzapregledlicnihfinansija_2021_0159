@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
- 
+
 
 class Goal extends Model
 {
@@ -38,5 +38,4 @@ class Goal extends Model
     protected $casts = [
         'deadline' => 'date', // Ovo osigurava da se `date` pretvara u Carbon instancu
     ];
- 
 }
