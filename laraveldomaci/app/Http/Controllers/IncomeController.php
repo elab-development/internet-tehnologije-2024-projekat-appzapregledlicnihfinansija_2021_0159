@@ -11,12 +11,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\GoalNotificationMail;
 
-// /**
-//  * za seminarski je ovaj kontroler dopunjen sa transakcijama
-//  */
-
-
-
 class IncomeController extends Controller
 {
     /**
@@ -91,7 +85,7 @@ class IncomeController extends Controller
 
 
                 // Provera statusa cilja i potencijalno slanje notifikacija
-                $percentageAchieved = (($goal->target_amount - $goal->current_amount) / $goal->target_amount) * 100;
+                $percentageAchieved = ($goal->current_amount / $goal->target_amount) * 100;
 
                 // Ako je postignuto 80%, 90% ili 100%, šaljemo email notifikaciju
                 if ($percentageAchieved >= 80 && $percentageAchieved < 90) {
