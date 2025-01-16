@@ -155,7 +155,87 @@ const ExpensesIncomes = () => {
   };
  
   
+  const handleExportPDF = () => {
+    // 1. Kreirajte novi jsPDF dokument
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "pt",
+      format: "A4",
+    });
   
+    // 2. Podesite font (jedan od ugrađenih; "helvetica", "times", "courier")
+    //    ili ubacite sopstveni font ako želite strogu usaglašenost sa temom
+    doc.setFont("helvetica", "normal");
+  
+    // 3. Naslov PDF-a (primer)
+    doc.setFontSize(18);
+    doc.setTextColor("#00204a");  
+    doc.text("Izvod transakcija", 40, 40);
+  
+    // 4. Napravite nizove za prihode i troškove (kao i do sada)
+    const incomeRows = incomes.map((income) => [
+      "Prihod",
+      income.source,
+      parseFloat(income.amount).toFixed(2),
+      income.currency,
+      income.date,
+    ]);
+  
+    const expenseRows = expenses.map((expense) => [
+      "Trošak",
+      expense.description,
+      parseFloat(expense.amount).toFixed(2),
+      expense.currency,
+      expense.date,
+    ]);
+  
+    const allRows = [...incomeRows, ...expenseRows];
+  
+    const totalIncome = incomes.reduce(
+      (acc, income) => acc + parseFloat(income.amount),
+      0
+    );
+    const totalExpenses = expenses.reduce(
+      (acc, expense) => acc + parseFloat(expense.amount),
+      0
+    );
+    const balance = totalIncome - totalExpenses;
+  
+    // 5. Poziv autoTable sa prilagođenim stilovima
+    doc.autoTable({
+      startY: 60, // da tablica krene ispod naslova
+      head: [["Tip", "Opis", "Iznos", "Valuta", "Datum"]],
+      body: allRows,
+      theme: "grid",  
+      headStyles: {
+        fillColor: "#00204a",    
+        textColor: "#ffffff",     
+        fontStyle: "bold",
+      },
+      bodyStyles: {
+        textColor: "#0c0c0c",     
+        fillColor: "#ffffff",    
+      },
+      alternateRowStyles: {
+        fillColor: "#f8f8f9",     
+      },
+      margin: { left: 40, right: 40 }, 
+    });
+  
+    // 6. Dodavanje „podvoda“ (ukupan iznos i balans) ispod tabele
+    let finalY = doc.lastAutoTable.finalY + 30; // Y pozicija gde se tabela završila
+    doc.setFontSize(12);
+    doc.setTextColor("#0c0c0c");
+    doc.text(`Ukupno prihodi: ${totalIncome.toFixed(2)} RSD`, 40, finalY);
+    doc.text(`Ukupno troškovi: ${totalExpenses.toFixed(2)} RSD`, 40, finalY + 20);
+    doc.text(`Balans: ${balance.toFixed(2)} RSD`, 40, finalY + 40);
+  
+    // 7. Na kraju – snimi PDF fajl
+    doc.save("Izvod-transakcija.pdf");
+  };
+  
+  if (loading) return <p>Učitavanje podataka...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="expenses-incomes-section">
