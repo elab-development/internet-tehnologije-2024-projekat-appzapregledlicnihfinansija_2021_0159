@@ -385,3 +385,63 @@ body {
     max-width: 1170px;
   }
 }
+.register-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #f8f8f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.register-container h2 {
+  color: #00204a;
+  margin-bottom: 20px;
+}
+
+.register-form .form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.register-form label {
+  color: #00204a;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.register-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.register-form .btn-submit {
+  background-color: #00bbf0;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.register-form .btn-submit:hover {
+  background-color: #007fa4;
+}
+
+.error-message {
+  color: #ff0000;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.success-message {
+  color: #007fa4;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
