@@ -23,7 +23,7 @@ const ExpensesIncomes = () => {
     date: "",
     currency: "USD",
   });
-
+  const [editEntry, setEditEntry] = useState(null); 
   const [filters, setFilters] = useState({
     description: "",
     date: "",
@@ -130,6 +130,56 @@ const ExpensesIncomes = () => {
       });
     } catch (err) {
       setError("Greška prilikom dodavanja unosa.");
+    }
+  };
+
+  const handleEditEntry = (entry, type) => {
+    setEditEntry({ ...entry, type });
+  };
+
+  const handleUpdateEntry = async () => {
+    try {
+      setError(null);
+
+      const token = sessionStorage.getItem("token");
+      const url = `http://127.0.0.1:8000/api/${editEntry.type}s/${editEntry.id}`;
+
+      const payload = {
+        amount: parseFloat(editEntry.amount),
+        description: editEntry.description,
+        goal_id: editEntry.goal_id || null,
+        date: editEntry.date,
+        currency: editEntry.currency,
+      };
+
+      if (editEntry.type === "income") {
+        payload.source = editEntry.source;
+      } else {
+        payload.expense_category_id = editEntry.expense_category_id;
+        payload.status = "paid";
+      }
+
+      const response = await axios.put(url, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (editEntry.type === "income") {
+        setIncomes(
+          incomes.map((income) =>
+            income.id === editEntry.id ? response.data : income
+          )
+        );
+      } else {
+        setExpenses(
+          expenses.map((expense) =>
+            expense.id === editEntry.id ? response.data : expense
+          )
+        );
+      }
+
+      setEditEntry(null);
+    } catch (err) {
+      setError("Greška prilikom ažuriranja unosa.");
     }
   };
 
@@ -259,6 +309,111 @@ const ExpensesIncomes = () => {
         categories={categories}
         goals={goals}
       />
+      {editEntry && (
+        <div
+          className="modal"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            className="modal-content"
+            style={{
+              background: "#fff",
+              padding: "20px",
+              borderRadius: "8px",
+              width: "90%",
+              maxWidth: "500px",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.25)",
+              animation: "fadeIn 0.3s ease-in-out",
+            }}
+          >
+            <h3 style={{ textAlign: "center", color: "#333", marginBottom: "20px" }}>
+              Ažuriranje unosa
+            </h3>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleUpdateEntry();
+              }}
+              style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+            >
+              <input
+                type="text"
+                value={editEntry.description}
+                onChange={(e) =>
+                  setEditEntry({ ...editEntry, description: e.target.value })
+                }
+                placeholder="Opis"
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  fontSize: "14px",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  backgroundColor: "#f9f9f9",
+                }}
+              />
+              <input
+                type="number"
+                value={editEntry.amount}
+                onChange={(e) =>
+                  setEditEntry({ ...editEntry, amount: e.target.value })
+                }
+                placeholder="Iznos"
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  fontSize: "14px",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  backgroundColor: "#f9f9f9",
+                }}
+              />
+              <button
+                type="submit"
+                style={{
+                  padding: "10px 15px",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  borderRadius: "4px",
+                  border: "none",
+                  cursor: "pointer",
+                  backgroundColor: "#00aaff",
+                  color: "#fff",
+                }}
+              >
+                Sačuvaj
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditEntry(null)}
+                style={{
+                  padding: "10px 15px",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  borderRadius: "4px",
+                  border: "none",
+                  cursor: "pointer",
+                  backgroundColor: "#ddd",
+                  color: "#333",
+                }}
+              >
+                Otkaži
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
       <div className="expenses-incomes-table">
         <div className="column expenses-column">
           <h4>Troškovi</h4>
@@ -266,11 +421,19 @@ const ExpensesIncomes = () => {
             {expenses.map((expense) => (
               <li key={expense.id}>
                 <ExpenseItem expense={expense} />
+                <div className="d-flex gap-2">
+                <button
+                  className="mr-1"
+                  onClick={() => handleEditEntry(expense, "expense")}
+                >
+                  Izmeni
+                </button>
                 <button
                   onClick={() => handleDeleteEntry(expense.id, "expense")}
                 >
                   Obriši
                 </button>
+                </div>
               </li>
             ))}
           </ul>
@@ -281,9 +444,14 @@ const ExpensesIncomes = () => {
             {incomes.map((income) => (
               <li key={income.id}>
                 <IncomeItem income={income} />
+                <div className="d-flex gap-2">
+                <button onClick={() => handleEditEntry(income, "income")} className="mr-1">
+                  Izmeni
+                </button>
                 <button onClick={() => handleDeleteEntry(income.id, "income")}>
                   Obriši
                 </button>
+                </div>
               </li>
             ))}
           </ul>
