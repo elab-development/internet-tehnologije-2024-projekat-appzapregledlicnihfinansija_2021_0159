@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Modal from './Modal';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ function Register() {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   // Fetch random user data on component mount
@@ -55,14 +57,10 @@ function Register() {
     e.preventDefault();
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/register", formData);
-
-
-
       setMessage(response.data.message);
       setErrors({});
-      
-      // Navigate to dashboard
-      navigate("/login");
+      setShowModal(true);
+      //navigate("/login");
     } catch (error) {
       if (error.response && error.response.status === 422) {
         setErrors(error.response.data.errors);
@@ -166,6 +164,15 @@ function Register() {
           Registruj se
         </button>
       </form>
+      <Modal
+        show={showModal}
+        title="Uspešno"
+        message="Uspešna registracija"
+        onClose={() => {
+          setShowModal(false);
+          navigate("/login"); // Navigacija nakon zatvaranja modala
+        }}
+      />
     </div>
   );
 }
