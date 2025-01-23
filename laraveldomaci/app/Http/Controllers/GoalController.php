@@ -104,6 +104,11 @@ class GoalController extends Controller
             $goal->status = 'achieved';
             $goal->save();
         }
+
+        if ($goal->current_amount < $goal->target_amount) {
+            $goal->status = 'in_progress';
+            $goal->save();
+        }
         return response()->json(new GoalResource($goal), 200);
     }
 
