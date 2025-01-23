@@ -206,23 +206,19 @@ const ExpensesIncomes = () => {
  
   
   const handleExportPDF = () => {
-    // 1. Kreirajte novi jsPDF dokument
+
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "pt",
       format: "A4",
     });
   
-    // 2. Podesite font (jedan od ugrađenih; "helvetica", "times", "courier")
-    //    ili ubacite sopstveni font ako želite strogu usaglašenost sa temom
     doc.setFont("helvetica", "normal");
-  
-    // 3. Naslov PDF-a (primer)
+
     doc.setFontSize(18);
     doc.setTextColor("#00204a");  
     doc.text("Izvod transakcija", 40, 40);
-  
-    // 4. Napravite nizove za prihode i troškove (kao i do sada)
+
     const incomeRows = incomes.map((income) => [
       "Prihod",
       income.source,
@@ -279,8 +275,7 @@ const ExpensesIncomes = () => {
     doc.text(`Ukupno prihodi: ${totalIncome.toFixed(2)} RSD`, 40, finalY);
     doc.text(`Ukupno troškovi: ${totalExpenses.toFixed(2)} RSD`, 40, finalY + 20);
     doc.text(`Balans: ${balance.toFixed(2)} RSD`, 40, finalY + 40);
-  
-    // 7. Na kraju – snimi PDF fajl
+
     doc.save("Izvod-transakcija.pdf");
   };
   

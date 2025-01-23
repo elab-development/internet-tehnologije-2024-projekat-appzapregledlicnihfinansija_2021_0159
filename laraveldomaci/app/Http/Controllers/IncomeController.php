@@ -169,12 +169,6 @@ class IncomeController extends Controller
             if ($oldGoalId) {
                 $oldGoal = Goal::findOrFail($oldGoalId);
                 $oldGoal->current_amount -= $oldAmount;
-                // ranije smo DODAVALI amount na goal, pa sada vraćamo staru vrednost ODUZIMANJEM
-                // ili obrnuto – zavisi kako ste definisali logiku. 
-                // U ovom primeru, podrazumevali smo da Income DODAJE iznos goal-u,
-                // pa kada brišemo ili menjamo stari iznos, treba da GA ODUZMEMO od goal->current_amount.
-
-                // Provera da li je time goal možda izgubio 'achieved' status
                 if ($oldGoal->current_amount < $oldGoal->target_amount && $oldGoal->status === 'achieved') {
                     $oldGoal->status = 'in_progress'; // ili nešto slično
                 }
