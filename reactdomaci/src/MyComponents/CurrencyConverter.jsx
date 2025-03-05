@@ -60,8 +60,9 @@ const CurrencyConverter = () => {
 
       {/* Iznos koji korisnik unosi */}
       <div style={{ marginBottom: "10px" }}>
-        <label>Iznos: </label>
+        <label htmlFor="amount">Iznos: </label>
         <input
+          id="amount"
           type="number"
           value={amount}
           onChange={(e) => setAmount(parseFloat(e.target.value))}
@@ -71,8 +72,9 @@ const CurrencyConverter = () => {
 
       {/* Izbor početne valute (fromCurrency) */}
       <div style={{ marginBottom: "10px" }}>
-        <label>Iz: </label>
+        <label htmlFor="fromCurrency">Iz: </label>
         <select
+          id="fromCurrency"
           value={fromCurrency}
           onChange={(e) => setFromCurrency(e.target.value)}
           style={{ width: "100%", padding: "8px" }}
@@ -87,8 +89,9 @@ const CurrencyConverter = () => {
 
       {/* Izbor ciljane valute (toCurrency) */}
       <div style={{ marginBottom: "10px" }}>
-        <label>U: </label>
+        <label htmlFor="toCurrency">U: </label>
         <select
+          id="toCurrency"
           value={toCurrency}
           onChange={(e) => setToCurrency(e.target.value)}
           style={{ width: "100%", padding: "8px" }}
