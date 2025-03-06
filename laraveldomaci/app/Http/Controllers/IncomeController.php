@@ -118,13 +118,24 @@ class IncomeController extends Controller
 
     public function sendGoalNotification($goal, $percentage)
     {
-        $data = [
-            'goalTitle' => $goal->title,
-            'percentage' => $percentage,
-            'targetAmount' => $goal->target_amount,
-            'currentAmount' => $goal->current_amount,
-            'remainingAmount' => $goal->target_amount - $goal->current_amount,
-        ];
+        if ($percentage >= 100) {
+            $data = [
+                'goalTitle' => $goal->title,
+                'percentage' => $percentage,
+                'targetAmount' => $goal->target_amount,
+                'currentAmount' => $goal->current_amount,
+                'remainingAmount' => 0,
+            ];
+        } else {
+            $data = [
+                'goalTitle' => $goal->title,
+                'percentage' => $percentage,
+                'targetAmount' => $goal->target_amount,
+                'currentAmount' => $goal->current_amount,
+                'remainingAmount' => $goal->target_amount - $goal->current_amount,
+            ];
+        }
+
 
         Mail::to(auth()->user()->email)->send(new GoalNotificationMail($data));
     }

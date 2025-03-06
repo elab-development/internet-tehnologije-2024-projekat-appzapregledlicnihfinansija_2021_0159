@@ -87,10 +87,16 @@ class ExpenseController extends Controller
                 // Npr. oduzimamo expense->amount od goal->current_amount
                 $goal->current_amount -= $expense->amount;
 
-                // Logika za status goal-a (primer)
+                // Logika za status goal-a 
                 if ($goal->current_amount < 0) {
                     $goal->current_amount = 0;
                     $goal->status = 'failed';
+                }
+
+                if ($goal->status == 'achieved' && $goal->current_amount < $goal->target_amount) {
+                    if ($goal->current_amount >= 0) {
+                        $goal->status = 'in_progress';
+                    }
                 }
 
                 $goal->save();
@@ -196,13 +202,23 @@ class ExpenseController extends Controller
 
     public function sendGoalNotification($goal, $percentage)
     {
-        $data = [
-            'goalTitle' => $goal->title,
-            'percentage' => $percentage,
-            'targetAmount' => $goal->target_amount,
-            'currentAmount' => $goal->current_amount,
-            'remainingAmount' => $goal->target_amount - $goal->current_amount,
-        ];
+        if ($percentage >= 100) {
+            $data = [
+                'goalTitle' => $goal->title,
+                'percentage' => $percentage,
+                'targetAmount' => $goal->target_amount,
+                'currentAmount' => $goal->current_amount,
+                'remainingAmount' => 0,
+            ];
+        } else {
+            $data = [
+                'goalTitle' => $goal->title,
+                'percentage' => $percentage,
+                'targetAmount' => $goal->target_amount,
+                'currentAmount' => $goal->current_amount,
+                'remainingAmount' => $goal->target_amount - $goal->current_amount,
+            ];
+        }
 
         Mail::to(auth()->user()->email)->send(new GoalNotificationMail($data));
     }
