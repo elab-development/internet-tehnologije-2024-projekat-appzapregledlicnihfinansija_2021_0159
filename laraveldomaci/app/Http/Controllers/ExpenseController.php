@@ -33,7 +33,7 @@ class ExpenseController extends Controller
             $query->where('goal_id', $request->goal_id);
         }
 
-        $expenses = $query->orderBy('date', 'desc')->paginate(10);
+        $expenses = $query->orderBy('date', 'desc')->paginate(5);
 
         return response()->json($expenses, 200);
     }

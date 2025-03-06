@@ -33,7 +33,7 @@ class IncomeController extends Controller
             $query->where('goal_id', $request->goal_id);
         }
 
-        $incomes = $query->orderBy('date', 'desc')->paginate(10);
+        $incomes = $query->orderBy('date', 'desc')->paginate(5);
 
         return response()->json($incomes, 200);
     }
